@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Корзина</title>
+</head>
+<body>
+    <div th:if="${session.cart != null}">
+        <p th:text = "'Наименование товара' + ${session.cart.getName()}"></p>
+        <p th:text = "'Количество товара ' + ${session.cart.getQuantity()}"></p>
+        <p th:text = "'Цена товара ' + ${session.cart.getPrice()}"></p>
+    </div>
+    <div th:if="${session.cart == null}"><p color="red">Корзина пуста</p></div>
+<a href="/product/add/in/cart">Добавить товар</a>
+</body>
+</html>
