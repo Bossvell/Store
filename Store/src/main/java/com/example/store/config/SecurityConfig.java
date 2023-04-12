@@ -1,20 +1,51 @@
 package com.example.store.config;
 
-import org.springframework.security.authentication.AuthenticationProvider;
+import com.example.store.services.PersonDetailsService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
-@EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfiguration {
-
-    private final AuthenticationProvider authenticationProvider;
-    // преупреждение
-    public SecurityConfig(AuthenticationProvider authenticationProvider) {
-        this.authenticationProvider = authenticationProvider;
+@Configuration
+public class SecurityConfig {
+//extends WebSecurityConfiguration
+    @Bean
+    public PasswordEncoder getPasswordEncoder(){ // отключение шифрования паролей
+        return NoOpPasswordEncoder.getInstance();
+    }
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+            .authorizeHttpRequests()//все страницы защищены формой аутентификации
+            .requestMatchers("/authentication","/error").permitAll()//для незалогиненых доступны страницы
+            .anyRequest().authenticated()//для всех остальных запустить форму аутентификацию
+            .and().formLogin().loginPage("/authentication") //какой url отправляется при заходе на защищенную страницу
+            .loginProcessingUrl("/process_login") //куда будут отправляться данные с формы
+            .defaultSuccessUrl("/index", true) //куда направить после успешной аутентиикации
+            .failureUrl("/authentication?error");//куда направлять в случае неуспешной аутентификации
+        return http.build();
     }
 
-    protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder){
-        authenticationManagerBuilder.authenticationProvider(authenticationProvider);
+    private final PersonDetailsService personDetailsService;
+
+    public SecurityConfig(PersonDetailsService personDetailsService) {
+        this.personDetailsService = personDetailsService;
+    }
+
+//    private final AuthenticationProvider authenticationProvider;
+//    // преупреждение
+//    public SecurityConfig(AuthenticationProvider authenticationProvider) {
+//        this.authenticationProvider = authenticationProvider;
+//    }
+
+    protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+      //  authenticationManagerBuilder.authenticationProvider(authenticationProvider);
+        authenticationManagerBuilder.userDetailsService(personDetailsService);
     }
 }
