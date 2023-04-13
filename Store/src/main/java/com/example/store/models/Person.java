@@ -11,7 +11,6 @@ public class Person {
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
-
     @NotEmpty(message = "Логин не может быть пустым")
     @Size(min=5, max = 30, message = "Логин должен быть от 5 до 30 символов")
     @Column(name="login")
@@ -21,6 +20,16 @@ public class Person {
     @Column(name="password")
     String password;
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    @Column(name="role")
+    String role;
     public int getId() {
         return id;
     }

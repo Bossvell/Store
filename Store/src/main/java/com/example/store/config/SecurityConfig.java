@@ -24,8 +24,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
             .authorizeHttpRequests()//все страницы защищены формой аутентификации
-            .requestMatchers("/authentication","/error", "/registration").permitAll()//для незалогиненых доступны страницы
-            .anyRequest().authenticated()//для всех остальных запустить форму аутентификацию
+            .requestMatchers("/admin").hasRole("ADMIN")// паттерн admin доступен только для роли ADMIN
+                .requestMatchers("/authentication", "/registration","/error").permitAll()//доступны всем
+                .anyRequest().hasAnyRole("USER","ADMIN")// все остальные доступны обоим пользователям
+                //("/authentication","/error", "/registration").permitAll()//для незалогиненых доступны страницы
+                //.anyRequest().authenticated()//для всех остальных запустить форму аутентификацию
             .and().formLogin().loginPage("/authentication") //какой url отправляется при заходе на защищенную страницу
             .loginProcessingUrl("/process_login") //куда будут отправляться данные с формы
             .defaultSuccessUrl("/index", true) //куда направить после успешной аутентиикации
