@@ -23,7 +23,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
             .authorizeHttpRequests()//все страницы защищены формой аутентификации
-            .requestMatchers("/authentication","/error").permitAll()//для незалогиненых доступны страницы
+            .requestMatchers("/authentication","/error", "/registration").permitAll()//для незалогиненых доступны страницы
             .anyRequest().authenticated()//для всех остальных запустить форму аутентификацию
             .and().formLogin().loginPage("/authentication") //какой url отправляется при заходе на защищенную страницу
             .loginProcessingUrl("/process_login") //куда будут отправляться данные с формы
