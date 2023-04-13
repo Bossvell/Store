@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -17,7 +18,7 @@ public class SecurityConfig {
 //extends WebSecurityConfiguration
     @Bean
     public PasswordEncoder getPasswordEncoder(){ // отключение шифрования паролей
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -47,6 +48,6 @@ public class SecurityConfig {
 
     protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
       //  authenticationManagerBuilder.authenticationProvider(authenticationProvider);
-        authenticationManagerBuilder.userDetailsService(personDetailsService);
+        authenticationManagerBuilder.userDetailsService(personDetailsService).passwordEncoder(getPasswordEncoder());
     }
 }
