@@ -28,7 +28,8 @@ public class SecurityConfig {
             .and().formLogin().loginPage("/authentication") //какой url отправляется при заходе на защищенную страницу
             .loginProcessingUrl("/process_login") //куда будут отправляться данные с формы
             .defaultSuccessUrl("/index", true) //куда направить после успешной аутентиикации
-            .failureUrl("/authentication?error");//куда направлять в случае неуспешной аутентификации
+            .failureUrl("/authentication?error")//куда направлять в случае неуспешной аутентификации
+            .and().logout().logoutUrl("/logout").logoutSuccessUrl("/index");
         return http.build();
     }
 
